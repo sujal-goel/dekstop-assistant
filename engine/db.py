@@ -1,22 +1,46 @@
 import csv
 import sqlite3
+import os
+import win32com.client
+import csv
+import sqlite3
 
-con = sqlite3.connect("jarvis.db")
-cursor = con.cursor()
+def get_start_menu_shortcuts(start_menu_path):
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shortcuts = []
+    
+    # Walk through all files in the start menu directory
+    for root, dirs, files in os.walk(start_menu_path):
+        for file in files:
+            if file.endswith(".lnk"):  # Check for shortcut files
+                shortcut_path = os.path.join(root, file)
+                shortcut = shell.CreateShortcut(shortcut_path)
+                target_path = shortcut.TargetPath  # Get the target path
+                shortcuts.append((file, target_path))
+    
+    return shortcuts
 
+def addWindowsApp(con,cursor):
+    # Start menu paths
+    start_menu_user = os.path.join(os.environ['APPDATA'], r"Microsoft\\Windows\\Start Menu\\Programs")
+    start_menu_all_users = os.path.join(os.environ['PROGRAMDATA'], r"Microsoft\\Windows\\Start Menu\\Programs")
 
+    # Get shortcuts from both user and all-users start menu
+    shortcuts = get_start_menu_shortcuts(start_menu_user) + get_start_menu_shortcuts(start_menu_all_users)
+    con = sqlite3.connect("jarvis.db")
+    cursor = con.cursor()
 
+    # Print the array of tuples (shortcut name, target path)
+    for shortcut, target in shortcuts:
+        shortcut = shortcut.replace(".lnk","")
+        shortcut=shortcut.lower()
+        print(f"{shortcut} -> {target}")
+        query = "INSERT INTO sys_command VALUES (null,?, ?)"
+        cursor.execute(query,(shortcut,target))
+    con.commit()
 
-# query = "CREATE TABLE IF NOT EXISTS sys_command(id integer primary key, name VARCHAR(100), path VARCHAR(1000))"
-# cursor.execute(query)
-
-# query = "INSERT INTO sys_command VALUES (null,'one note', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\ONENOTE.exe')"
-# cursor.execute(query)
-# con.commit()
-
-query = "CREATE TABLE IF NOT EXISTS web_command(id integer primary key, name VARCHAR(100), url VARCHAR(1000))"
-cursor.execute(query)
-data = [
+def addWebsite(con,cursor):
+    data = [
     {"name": "Google", "url": "https://www.google.com"},
     {"name": "Bing", "url": "https://www.bing.com"},
     {"name": "Yahoo", "url": "https://www.yahoo.com"},
@@ -48,13 +72,23 @@ data = [
     {"name": "Zara", "url": "https://www.zara.com"},
     {"name": "H&M", "url": "https://www.hm.com"},
     {"name": "ASOS", "url": "https://www.asos.com"}
-]
-for object in data:
-    
-    query = f"INSERT INTO web_command VALUES (null,'{object["name"]}','{object["url"]}')"
-    cursor.execute(query)
-con.commit()
+    ]
 
+# Using parameterized queries to prevent SQL injection
+    for obj in data:
+        query = "INSERT INTO web_command (name, url) VALUES (?, ?)"
+        cursor.execute(query, (obj["name"], obj["url"]))
+    con.commit()
+
+con = sqlite3.connect("jarvis.db")
+cursor = con.cursor()
+query = "CREATE TABLE IF NOT EXISTS sys_command(id integer primary key, name VARCHAR(100), path VARCHAR(1000))"
+cursor.execute(query)
+addWindowsApp(con,cursor)
+
+query = "CREATE TABLE IF NOT EXISTS web_command(id integer primary key, name VARCHAR(100), url VARCHAR(1000))"
+cursor.execute(query)
+addWebsite(con,cursor)
 
 # testing module
 # app_name = "android studio"
@@ -63,7 +97,7 @@ con.commit()
 # print(results[0][0])
 
 # Create a table with the desired columns
-# cursor.execute('''CREATE TABLE IF NOT EXISTS contacts (id integer primary key, name VARCHAR(200), mobile_no VARCHAR(255), email VARCHAR(255) NULL)''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS contacts (id integer primary key, name VARCHAR(200), mobile_no VARCHAR(255), email VARCHAR(255) NULL)''')
 
 
 # Specify the column indices you want to import (0-based index)
@@ -79,7 +113,7 @@ con.commit()
 
 # # Commit changes and close connection
 # con.commit()
-# con.close()
+con.close()
 
 # query = "INSERT INTO contacts VALUES (null,'abhinav', '9810422278', 'null')"
 # cursor.execute(query)
