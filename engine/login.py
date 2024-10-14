@@ -93,5 +93,3 @@ def logout():
     with open("engine\\auth\\user.json","w") as jsonfile:
         json.dump({},jsonfile)
 
-# obj.createAuthenticateUser("kanak","sujalgoel19@gmail.com",str(8448501684),str(1234),True)   
-# obj.login("sujalgoel19@gmail.com","1234")       
