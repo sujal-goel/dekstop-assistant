@@ -8,6 +8,7 @@ if exist "marker.txt" (
 )
 call :run
 pause
+exit 
 
 :run
 call env\Scripts\activate.bat
