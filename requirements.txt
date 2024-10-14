@@ -5,7 +5,6 @@ eel
 pyautogui
 matplotlib
 gTTS
-playsound
 hugchat
 pynput
 requests
@@ -16,3 +15,6 @@ pywhatkit
 pvporcupine
 bs4
 opencv-python
+playsound==1.2.2
+pyaudio
+opencv-contrib-python 
