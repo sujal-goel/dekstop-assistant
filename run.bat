@@ -3,8 +3,7 @@ echo Intializing the project
 REM Check if the marker file exists
 if exist "marker.txt" (
     echo Project has already initialized
-)
-else(
+) else (
     call :initialize
 )
 call :run
