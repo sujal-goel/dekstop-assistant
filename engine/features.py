@@ -76,7 +76,6 @@ def openCommand(query):
             print(e)
 
        
-
 def PlayYoutube(query):
     search_term = extract_yt_term(query)
     speak("Playing "+search_term+" on YouTube")
