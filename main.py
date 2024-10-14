@@ -16,7 +16,7 @@ def start():
           data = getLogin()
           playAssistantSound()
           if data!={}:
-            subprocess.call([r'device.bat'])
+            # subprocess.call([r'device.bat'])
             eel.hideLoader("FaceAuth")
             speak("Ready for Face Authentication")
             flag = recoganize.AuthenticateFace(data["userid"],data["name"])

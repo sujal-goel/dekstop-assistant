@@ -1,25 +1,18 @@
 speedtest-cli
 uuid
-eel==0.14.0
-opencv-python-headless==4.5.3.56
-pyautogui==0.9.53
-matplotlib==3.4.2
-gTTS==2.2.3
-playsound==1.2.2
-beautifulsoup4==4.9.3
-hugchat==0.0.1
-pynput==1.7.3
-requests==2.25.1
+eel
+# opencv-python-headless==4.5.3.56
+pyautogui
+matplotlib
+gTTS
+playsound
+hugchat
+pynput
+requests
 googletrans==4.0.0-rc1
-pyttsx3==2.90
-SpeechRecognition==3.8.1
+pyttsx3
+SpeechRecognition
 pywhatkit
 pvporcupine
 bs4
-beautifulsoup4
-# Database dependencies
-sqlite3==3.35.4
-# Additional dependencies
-multiprocessing-logging==0.3.1
-json
-webbrowser
+opencv-python
