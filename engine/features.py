@@ -1,5 +1,6 @@
 import os
 from pipes import quote
+import google.generativeai as genai
 import re
 import sqlite3
 import struct
@@ -16,7 +17,6 @@ import googletrans
 import requests
 import wikipedia
 from bs4 import BeautifulSoup
-
 from gtts import gTTS
 from pynput.keyboard import Key, Controller
 from engine.command import speak,takecommand
@@ -187,14 +187,11 @@ def whatsApp(mobile_no, message, flag, name):
 # chat bot 
 def chatBot(query):
     user_input = query.lower()
-    chatbot = hugchat.ChatBot(cookie_path="engine\\cookies.json")
-    id = chatbot.new_conversation()
-    chatbot.change_conversation(id)
-    response =  chatbot.chat(user_input)
-    print(response)
-    speak(response)
-    return response
-# android automation
+    apikey="AIzaSyDgflhQJ2v0VxGCpDdbtP6wBiOX92oQgeg"
+    genai.configure(api_key=apikey)
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content("hi how are you")
+    speak(response.text)
 
 def makeCall(name, mobileNo):
     mobileNo =mobileNo.replace(" ", "")
@@ -312,9 +309,9 @@ def int_speed():
     except Exception as e:
         speak(f"An error occurred while testing internet speed: {e}")
         
-def wikiSearch():
+def wikiSearch(query):
     speak('Searching Wikipedia...')
-    query = query.replace("wikipedia", "")
+    query = query.replace("on wikipedia", "")
     results = wikipedia.summary(query, sentences=2) 
     speak(results)
 # print all the languages

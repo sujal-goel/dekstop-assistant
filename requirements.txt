@@ -18,3 +18,4 @@ opencv-python
 playsound==1.2.2
 pyaudio
 opencv-contrib-python 
+google-generativeai
