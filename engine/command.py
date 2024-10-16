@@ -58,7 +58,8 @@ def allCommands(message=1):
         elif "on youtube" in query:
             from engine.features import PlayYoutube
             PlayYoutube(query)
-        
+
+
         elif "send message" in query or "phone call" in query or "video call" in query:
             from engine.features import findContact, whatsApp, makeCall, sendMessage
             contact_no, name = findContact(query)
@@ -126,7 +127,7 @@ def allCommands(message=1):
             int_speed()
         elif "on wikipedia" in query:
             from engine.features import wikiSearch
-            wikiSearch()
+            wikiSearch(query)
         
         
         else:
