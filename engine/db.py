@@ -77,7 +77,7 @@ def addWebsite(con,cursor):
 # Using parameterized queries to prevent SQL injection
     for obj in data:
         query = "INSERT INTO web_command (name, url) VALUES (?, ?)"
-        cursor.execute(query, (obj["name"], obj["url"]))
+        cursor.execute(query, (obj["name"].lower(), obj["url"]))
     con.commit()
 
 con = sqlite3.connect("jarvis.db")
