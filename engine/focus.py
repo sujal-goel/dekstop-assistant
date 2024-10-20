@@ -1,17 +1,19 @@
-# import ctypes
-# import sys
 import datetime
 import time
 import matplotlib.pyplot as pt
-from engine.command import speak,takecommand
 import sqlite3
+from engine.command import speak
+import os
+import sys
+import ctypes
 
-def createConnection():
-    con = sqlite3.connect("./jarvis.db")
-    cursor = con.cursor()
-    query = "CREATE TABLE IF NOT EXISTS blockedSites(name VARCHAR,url VARCHAR)"
-    cursor.execute(query)
-    return con,cursor
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+
 
 def focus_graph():
     file = open("fgraph.txt", "r")
@@ -21,7 +23,7 @@ def focus_graph():
     x1 = []
 
     for j in range(0, len(cont)):
-        cont[j] = float(cont[j])
+        cont[j] = float(cont[j]) 
         x1.append(j)
 
     print(cont)
@@ -33,81 +35,65 @@ def focus_graph():
     pt.ylabel("Focus Time", fontsize=14)
     pt.grid()
     pt.show()
+  
+def focus_mode(st2):
 
-
-def is_admin(st1, st2):
-    # try:
-    #     return ctypes.windll.shell32.IsUserAnAdmin()
-    # except:
-    #     return False
-
-    current_time = st1
-    Stop_time = st2
-
-    host_path = "C:\Windows\System32\drivers\etc\hosts"
+  try:
+    if not is_admin():
+    # Re-run the script with administrator privileges
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        sys.exit()
+    st1 = datetime.datetime.now().strftime("%H:%M")
+    # st2 = custom_gui_input("Enter the Time eg:- [10:10] :- ")
+    x = st1.replace(":", ".")
+    if st2 == None:
+        speak("Unable to enter in the focus mode")
+        return
+    y = st2.replace(":", ".")
+    x = float(x)
+    y = float(y)
+    z = y - x
+    z = round(z, 3)
+    z = str(z)
+    current_time=st1
+    stop_time=st2
+    host_path = r"C:\\Windows\\System32\\drivers\\etc\\hosts"
     redirect = "127.0.0.1"
-    print(f"current time is:- {current_time}")
-    time.sleep(2)
-    con,cursor = createConnection()
-    query="Select url from blockedSites"
+    speak(f"Entering focus mode for Next {z} minutes")
+    con = sqlite3.connect("jarvis.db")
+    cursor = con.cursor()
+    query = "SELECT url FROM web_command IF category IN 'social media' "
     cursor.execute(query)
-    website_list =  cursor.fetchall()
-    if current_time < Stop_time:
+    website_list = cursor.fetchall()
+    if current_time < stop_time:
         with open(host_path, "r+") as file:
             content = file.read()
-            time.sleep(2)
-            print("processing.....!!")
-            for website in website_list:
-                if website in content:
-                    pass
-                else:
-                    file.write(f"{redirect} {website}\n")
-                    time.sleep(1)
-            print("FOCUS MODE TURN ON!!!")
+            print("Processing...")
 
-    while True:
-        current_time = datetime.datetime.now().strftime("%H:%M")
-        current_time = float(current_time.replace(":","."))
-        if current_time >= Stop_time:
-            with open(host_path, "r+") as file:
-                content = file.readlines()
-                file.seek(0)
+            # Write the blocking rules only if not already present
+            to_write = [f"{redirect} {website}\n" for website in website_list if website not in content]
+            if to_write:
+                file.write(''.join(to_write))
+                print("Websites blocked.")
+                speak("Websites blocked.")
+                speak("FOCUS MODE TURNED ON!!!")
+            else:
+                print("Websites already blocked.")
+        
+        # Monitoring focus time and turning off blocking after the stop time
+        while datetime.datetime.now().strftime("%H:%M") < stop_time:
+            time.sleep(60)  # Check every minute
 
-                for line in content:
-                    if not any(website in line for website in website_list):
-                        file.write(line)
-                file.truncate()
-                print("FOCUS MODE IS OFF..!!!")
-                break
-
-
-# else:
-#     ctypes.windll.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
-
-
-def res():
-    st1 = datetime.datetime.now().strftime("%H:%M")
-    speak("for how many minutes ")
-    z = takecommand()
-    if ("minutes" in z):
-        z.replace("minutes","")
-    z=int(z)
-    hours = 0
-    if z==0:
-        return 
-    else:
-        hours = z/60
-    st2 = float(st1.replace(":","."))+ hours
-    with open("fgraph.txt", "a") as file:
-        file.write(f", {str(hours)}")
-        file.close()
-    is_admin(st1, st2)
-    speak("Do you want to create focus graph")
-    z = takecommand().lower()
-    if z == "yes":
-        focus_graph()
-    else:
-        pass
-
-
-res()
+        # Removing the blocked websites after the focus mode ends
+        with open(host_path, "r+") as file:
+            lines = file.readlines()
+            file.seek(0)
+            file.writelines([line for line in lines if not any(website in line for website in website_list)])
+            file.truncate()
+            print("FOCUS MODE IS OFF!!!")
+            speak("FOCUS MODE IS OFF!!!")
+    with open("engine\\fgraph.txt", "a") as file:
+        file.write(f", {z}")
+  except:
+       print("Cannot Enter focus mode Something Went Wrong") 
+    

@@ -19,3 +19,4 @@ playsound==1.2.2
 pyaudio
 opencv-contrib-python 
 google-generativeai
+python-dotenv

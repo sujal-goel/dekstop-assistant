@@ -356,3 +356,134 @@ svg {
 #register-form label {
   color: white;
 }
+.settings-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.settings-btn:hover {
+  background-color: #0056b3;
+}
+
+.toggle-menu {
+  position: absolute;
+  top: 65%; /* Adjust based on the position of the SettingsBtn */
+  right: 25%;
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  color: #fff;
+}
+
+.toggle-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width:100%;
+
+}
+
+.toggle-menu li {
+  padding: 10px 20px;
+  background-color: #111;
+  transition: box-shadow 0.3s ease-in-out;
+}
+.toggle-menu li:hover {
+  animation: glow 2s infinite alternate;
+
+}
+@keyframes glow {
+  0% {
+    box-shadow: 
+      0 0 10px 2px rgba(255, 0, 0, 0.8),   /* Red glow */
+      0 0 20px 4px rgba(255, 165, 0, 0.8), /* Orange glow */
+      0 0 30px 6px rgba(255, 255, 0, 0.8); /* Yellow glow */
+  }
+  33% {
+    box-shadow: 
+      0 0 10px 2px rgba(0, 255, 0, 0.8),   /* Green glow */
+      0 0 20px 4px rgba(0, 255, 255, 0.8), /* Cyan glow */
+      0 0 30px 6px rgba(0, 0, 255, 0.8);   /* Blue glow */
+  }
+  66% {
+    box-shadow: 
+      0 0 10px 2px rgba(75, 0, 130, 0.8),  /* Indigo glow */
+      0 0 20px 4px rgba(238, 130, 238, 0.8), /* Violet glow */
+      0 0 30px 6px rgba(255, 0, 255, 0.8); /* Magenta glow */
+  }
+  100% {
+    box-shadow: 
+      0 0 10px 2px rgba(255, 0, 0, 0.8),   /* Red glow */
+      0 0 20px 4px rgba(255, 165, 0, 0.8), /* Orange glow */
+      0 0 30px 6px rgba(255, 255, 0, 0.8); /* Yellow glow */
+  }
+}
+.toggle-menu li a {
+  text-decoration: none;
+  color: #ffeeee;
+  display: block;
+  width:100%;
+  padding-left:15px;
+}
+
+.profile-update-container {
+  background-color: #181818a8;
+  border: 2px solid #00AAFF;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgb(25, 0, 255), inset 0 0 20px rgb(25, 0, 255);
+  width: 300px;
+  margin: 20px auto;
+  color: white;
+}
+
+.profile-update-container h2 {
+  color: #00AAFF;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #00AAFF;
+  border-radius: 5px;
+  background-color: #181818;
+  color: white;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #00AAFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #0088cc;
+}

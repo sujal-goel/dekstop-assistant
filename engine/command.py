@@ -133,7 +133,7 @@ def allCommands(message=1):
         else:
             from engine.features import chatBot
             chatBot(query)
-    except:
-        print("error")
+    except Exception as e:
+        print(f"error: {e}")
     
     eel.ShowHood()

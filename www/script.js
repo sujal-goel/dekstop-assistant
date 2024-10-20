@@ -350,3 +350,8 @@ $(function () {
 		}
 	});
 });
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Function to set user details into the form
+    
+});
