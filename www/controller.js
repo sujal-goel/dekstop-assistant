@@ -6,7 +6,7 @@ $(document).ready(function () {
     eel.expose(DisplayMessage)
     function DisplayMessage(message) {
 
-        $(".siri-message li:first").text(message);
+        $(".siri-message").text(message);
         $('.siri-message').textillate('start');
 
     }
@@ -65,19 +65,16 @@ $(document).ready(function () {
     }
     const registertologin = document.getElementById("registertologin")
     registertologin.addEventListener("click",showLogin,false)
-
     // Hide Loader and display Face Auth animation
     eel.expose(hideLoader)
     function hideLoader(destination) {
-
-        $("#Loader").attr("hidden", true);
-        // $(`#FaceAuth`).attr("hidden", false);
+        $('#Loader').attr("hidden", true);
         $(`#${destination}`).attr("hidden", false);
 
     }
     eel.expose(hideMessage)
     function hideMessage(){
-        $('#message').attr("hidden",True)
+        $('#message').attr("hidden",true)
     }
     // Hide Face auth and display Face Auth success animation
     eel.expose(hideFaceAuth)
@@ -88,6 +85,14 @@ $(document).ready(function () {
 
     }
 
+    eel.expose(ask)
+    function ask(message){
+        let ans = prompt(message);
+        if(ans!= null){
+            return ans
+        }
+    }
+
     // Hide success and display 
     eel.expose(hideFaceAuthSuccess)
     function hideFaceAuthSuccess() {
@@ -96,7 +101,6 @@ $(document).ready(function () {
         $("#HelloGreet").attr("hidden", false);
 
     }
-
 
     // Hide Start Page and display blob
     eel.expose(hideStart)

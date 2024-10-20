@@ -152,7 +152,92 @@ $(document).ready(function () {
             alert('Registration failed');
         }
     }
-    const registerSubmit = document.getElementById("register-submit")
-    registerSubmit.addEventListener("click",register,false)
+    const registerSubmit = document.getElementById("register-submit");
+    registerSubmit.addEventListener("click",register,false);
 
+    const settingsBtn = document.getElementById('SettingsBtn');
+    const toggleMenu = document.getElementById('toggle-menu');
+    
+    settingsBtn.addEventListener('click', function () {
+            if (toggleMenu.hidden) {
+                toggleMenu.hidden = false;
+            } else {
+                toggleMenu.hidden = true;
+            }
+        });
+    
+        // Close the menu if clicked outside
+    document.addEventListener('click', function (event) {
+            if (!settingsBtn.contains(event.target) && !toggleMenu.contains(event.target)) {
+                toggleMenu.hidden = true;
+            }
+        });
+
+     const logout = document.getElementById("logout-btn");
+     logout.addEventListener('click',function (event){
+        event.preventDefault();
+        var confiramtion = confirm("Are you sure logging out yourself");
+        if (confiramtion){
+            $('#Oval').attr("hidden",true);
+            $('#HelloGreet').attr("hidden",true);
+            $("#Start").attr("hidden",false);
+            $("#Loader").attr("hidden",false);
+            eel.logout();
+        }
+     })   
+
+     const profile = document.getElementById("profile-btn");
+     profile.addEventListener('click',(event)=>{
+        event.preventDefault();
+        $('#Oval').attr("hidden",true);
+        $('#profile').attr("hidden",false);
+     })
+
+     function setUserDetails(userDetails) {
+        document.getElementById('username').value = userDetails.username;
+        document.getElementById('email').value = userDetails.email;
+        document.getElementById('phone').value = userDetails.phone;
+        document.getElementById('password').value = userDetails.password;
+        document.getElementById('confirm-password').value = userDetails.password; // Assuming confirm password is same as password initially
+    }
+
+    // Fetch user details from eel and set them into the form
+    eel.getUserDetails()(function(userDetails) {
+        setUserDetails(userDetails);
+    });
+	document.getElementById('profile-update-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get current form values
+        const updatedUserDetails = {
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            password: document.getElementById('password').value,
+        };
+
+        // Check if there are any changes
+        const hasChanges = Object.keys(updatedUserDetails).some(key => updatedUserDetails[key] !== initialUserDetails[key]);
+
+        if (hasChanges) {
+            // Update user details through eel
+            eel.updateUser(updatedUserDetails)(function(response) {
+                if (response.success) {
+                    alert('Profile updated successfully!');
+					$('#profile').attr("hidden",true);
+					$('#Oval').attr("hidden",false);
+                } else {
+                    alert('Failed to update profile. Please try again.');
+                }
+            });
+        } else {
+            alert('No changes detected.');
+			$('#profile').attr("hidden",true);
+			$('#Oval').attr("hidden",false);
+        }
+    });
+    //  const contact = document.getElementById("contact-btn");
+    //  contact.addEventListener('click',(event)=>{
+    //     event.preventDefault();
+    //  })
 });

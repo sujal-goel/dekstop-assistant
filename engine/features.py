@@ -24,9 +24,9 @@ from engine.config import ASSISTANT_NAME
 # Playing assiatnt sound function
 import pywhatkit as kit
 import pvporcupine
-
+from engine.focus import *
 from engine.helper import extract_yt_term, remove_words
-from hugchat import hugchat
+from dotenv import load_dotenv,dotenv_values
 
 con = sqlite3.connect("jarvis.db")
 cursor = con.cursor()
@@ -35,6 +35,15 @@ cursor = con.cursor()
 def playAssistantSound():
     music_dir = "www\\assets\\audio\\start_sound.mp3"
     playsound(music_dir)
+
+# chat bot 
+def chatBot(query):
+    load_dotenv()
+    user_input = query.lower()
+    genai.configure(api_key=os.getenv('apikey'))
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(user_input)
+    speak(response.text)
 
     
 def openCommand(query):
@@ -46,10 +55,20 @@ def openCommand(query):
     app_name = query.strip()
 
     if app_name != "":
-
+        
         try:
+            if app_name =="focus mode":
+                time = str(eel.ask("Enter the Time till focus mode should remain active eg:- [10:10]"))
+                focus_mode(time)
+                show = eel.ask("Do you Want to see your focus graph")
+                if show=="yes" or show ==1:
+                    focus_graph()
+                    return
+                else:
+                    return
+                
             cursor.execute(
-                'SELECT path FROM sys_command WHERE name = ?', (app_name,))
+                'SELECT path FROM sys_command WHERE name IN (?)', (app_name,))
             results = cursor.fetchall()
 
             if len(results) != 0:
@@ -184,14 +203,6 @@ def whatsApp(mobile_no, message, flag, name):
     pyautogui.hotkey('enter')
     speak(jarvis_message)
 
-# chat bot 
-def chatBot(query):
-    user_input = query.lower()
-    apikey="AIzaSyDgflhQJ2v0VxGCpDdbtP6wBiOX92oQgeg"
-    genai.configure(api_key=apikey)
-    model = genai.GenerativeModel("gemini-1.5-flash")
-    response = model.generate_content("hi how are you")
-    speak(response.text)
 
 def makeCall(name, mobileNo):
     mobileNo =mobileNo.replace(" ", "")

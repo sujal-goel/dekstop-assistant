@@ -56,7 +56,7 @@ def AuthenticateFace(path,name):
             # to predict on every single image
             id, accuracy = recognizer.predict(converted_image[y:y+h, x:x+w])
             # Check if accuracy is less them 100 ==> "0" is perfect match
-            if (accuracy < 40 and accuracy >=0):
+            if (accuracy < 50 and accuracy >=0):
                 id = names[id]
                 accuracy = "  {0}%".format(round(100 - accuracy))
                 flag = 1

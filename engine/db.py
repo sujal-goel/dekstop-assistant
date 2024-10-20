@@ -41,43 +41,44 @@ def addWindowsApp(con,cursor):
 
 def addWebsite(con,cursor):
     data = [
-    {"name": "Google", "url": "https://www.google.com"},
-    {"name": "Bing", "url": "https://www.bing.com"},
-    {"name": "Yahoo", "url": "https://www.yahoo.com"},
-    {"name": "Facebook", "url": "https://www.facebook.com"},
-    {"name": "Instagram", "url": "https://www.instagram.com"},
-    {"name": "Twitter", "url": "https://www.twitter.com"},
-    {"name": "LinkedIn", "url": "https://www.linkedin.com"},
-    {"name": "YouTube", "url": "https://www.youtube.com"},
-    {"name": "Netflix", "url": "https://www.netflix.com"},
-    {"name": "Vimeo", "url": "https://www.vimeo.com"},
-    {"name": "Amazon", "url": "https://www.amazon.com"},
-    {"name": "eBay", "url": "https://www.ebay.com"},
-    {"name": "Alibaba", "url": "https://www.alibaba.com"},
-    {"name": "BBC", "url": "https://www.bbc.com"},
-    {"name": "CNN", "url": "https://www.cnn.com"},
-    {"name": "The New York Times", "url": "https://www.nytimes.com"},
-    {"name": "Wikipedia", "url": "https://www.wikipedia.org"},
-    {"name": "Coursera", "url": "https://www.coursera.org"},
-    {"name": "Khan Academy", "url": "https://www.khanacademy.org"},
-    {"name": "Google Drive", "url": "https://www.drive.google.com"},
-    {"name": "Dropbox", "url": "https://www.dropbox.com"},
-    {"name": "OneDrive", "url": "https://www.onedrive.com"},
-    {"name": "Reddit", "url": "https://www.reddit.com"},
-    {"name": "Twitch", "url": "https://www.twitch.tv"},
-    {"name": "Discord", "url": "https://www.discord.com"},
-    {"name": "Slack", "url": "https://www.slack.com"},
-    {"name": "Microsoft Teams", "url": "https://www.teams.microsoft.com"},
-    {"name": "Zoom", "url": "https://www.zoom.us"},
-    {"name": "Zara", "url": "https://www.zara.com"},
-    {"name": "H&M", "url": "https://www.hm.com"},
-    {"name": "ASOS", "url": "https://www.asos.com"}
-    ]
+    {"name": "Google", "url": "https://www.google.com", "category": "Search Engine"},
+    {"name": "Bing", "url": "https://www.bing.com", "category": "Search Engine"},
+    {"name": "Yahoo", "url": "https://www.yahoo.com", "category": "Search Engine"},
+    {"name": "Facebook", "url": "https://www.facebook.com", "category": "Social Media"},
+    {"name": "Instagram", "url": "https://www.instagram.com", "category": "Social Media"},
+    {"name": "Twitter", "url": "https://www.twitter.com", "category": "Social Media"},
+    {"name": "LinkedIn", "url": "https://www.linkedin.com", "category": "Social Media"},
+    {"name": "YouTube", "url": "https://www.youtube.com", "category": "Video Streaming"},
+    {"name": "Netflix", "url": "https://www.netflix.com", "category": "Video Streaming"},
+    {"name": "Vimeo", "url": "https://www.vimeo.com", "category": "Video Streaming"},
+    {"name": "Amazon", "url": "https://www.amazon.com", "category": "E-commerce"},
+    {"name": "eBay", "url": "https://www.ebay.com", "category": "E-commerce"},
+    {"name": "Alibaba", "url": "https://www.alibaba.com", "category": "E-commerce"},
+    {"name": "BBC", "url": "https://www.bbc.com", "category": "News"},
+    {"name": "CNN", "url": "https://www.cnn.com", "category": "News"},
+    {"name": "The New York Times", "url": "https://www.nytimes.com", "category": "News"},
+    {"name": "Wikipedia", "url": "https://www.wikipedia.org", "category": "Educational"},
+    {"name": "Coursera", "url": "https://www.coursera.org", "category": "Educational"},
+    {"name": "Khan Academy", "url": "https://www.khanacademy.org", "category": "Educational"},
+    {"name": "Google Drive", "url": "https://www.drive.google.com", "category": "Cloud Storage"},
+    {"name": "Dropbox", "url": "https://www.dropbox.com", "category": "Cloud Storage"},
+    {"name": "OneDrive", "url": "https://www.onedrive.com", "category": "Cloud Storage"},
+    {"name": "Reddit", "url": "https://www.reddit.com", "category": "Social Media"},
+    {"name": "Twitch", "url": "https://www.twitch.tv", "category": "Video Streaming"},
+    {"name": "Discord", "url": "https://www.discord.com", "category": "Social Media"},
+    {"name": "Slack", "url": "https://www.slack.com", "category": "Communication"},
+    {"name": "Microsoft Teams", "url": "https://www.teams.microsoft.com", "category": "Communication"},
+    {"name": "Zoom", "url": "https://www.zoom.us", "category": "Communication"},
+    {"name": "Zara", "url": "https://www.zara.com", "category": "E-commerce"},
+    {"name": "H&M", "url": "https://www.hm.com", "category": "E-commerce"},
+    {"name": "ASOS", "url": "https://www.asos.com", "category": "E-commerce"}
+]
+
 
 # Using parameterized queries to prevent SQL injection
     for obj in data:
-        query = "INSERT INTO web_command (name, url) VALUES (?, ?)"
-        cursor.execute(query, (obj["name"].lower(), obj["url"]))
+        query = "INSERT INTO web_command (name, url,category) VALUES (?, ?, ?)"
+        cursor.execute(query, (obj["name"].lower(), obj["url"],obj["category"].lower()))
     con.commit()
 
 con = sqlite3.connect("jarvis.db")
@@ -86,7 +87,7 @@ query = "CREATE TABLE IF NOT EXISTS sys_command(id integer primary key, name VAR
 cursor.execute(query)
 addWindowsApp(con,cursor)
 
-query = "CREATE TABLE IF NOT EXISTS web_command(id integer primary key, name VARCHAR(100), url VARCHAR(1000))"
+query = "CREATE TABLE IF NOT EXISTS web_command(id integer primary key, name VARCHAR(100), url VARCHAR(1000), category VARCHAR(50))"
 cursor.execute(query)
 addWebsite(con,cursor)
 

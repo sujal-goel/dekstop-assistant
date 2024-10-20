@@ -92,4 +92,45 @@ def getLogin():
 def logout():
     with open("engine\\auth\\user.json","w") as jsonfile:
         json.dump({},jsonfile)
+    eel.hideLoader("login-form")
+    eel.DisplayMessage("Login to Access")
 
+@eel.expose
+def getUserDetails():
+   try: 
+    data = getLogin()
+    conn,cursor = createConnection()
+    cursor.execute("SELECT name, email, phone, password FROM user WHERE userid = ?",(data["id"],))  # Assuming user ID is 1
+    user_details = cursor.fetchone()
+    conn.close()
+    print(user_details)
+    if user_details:
+        return {
+            "username": user_details["name"],
+            "email": user_details["email"],
+            "phone": user_details["phone"],
+            "password": user_details["password"]
+        }
+    else:
+        return {}
+   except Exception as e:
+       pass
+@eel.expose
+def updateUser(updated_details):
+
+    try:
+        data = getLogin()
+        conn,cursor = createConnection()
+    
+        cursor.execute("""
+            UPDATE user
+            SET name = ?, email = ?, phone = ?, password = ?
+            WHERE userid = ?
+        """, (updated_details["username"], updated_details["email"], updated_details["phone"], updated_details["password"],data["id"]))
+        
+        conn.commit()
+        conn.close()
+        
+        return {"success": True}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
