@@ -171,7 +171,7 @@ def whatsApp(mobile_no, message, flag, name):
         jarvis_message = "message send successfully to "+name
 
     elif flag == 'call':
-        target_tab = 7
+        target_tab = 4
         message = ''
         jarvis_message = "calling to "+name
 
@@ -208,7 +208,9 @@ def makeCall(name, mobileNo):
     mobileNo =mobileNo.replace(" ", "")
     speak("Calling "+name)
     command = 'adb shell am start -a android.intent.action.CALL -d tel:'+mobileNo
-    os.system(command)
+    response = os.system(command)
+    if response != 0:
+        print("Failed to initiate call. Ensure ADB is connected and try again.")
 
 
 # to send message

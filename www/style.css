@@ -487,3 +487,84 @@ svg {
 .btn:hover {
   background-color: #0088cc;
 }
+/* Contact Section Table Styling */
+#contact-section {
+  background-color: #181818a8;
+  border: 2px solid #00AAFF;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgb(25, 0, 255), inset 0 0 20px rgb(25, 0, 255);
+  color: white;
+  margin: 20px auto;
+  width: 80%;
+}
+
+#contact-section h1, #contact-section h2 {
+  color: #00AAFF;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#contact-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+#contact-section th, #contact-section td {
+  border: 1px solid #00AAFF;
+  padding: 10px;
+  text-align: left;
+  color: white;
+}
+
+#contact-section th {
+  background-color: #0045ff;
+}
+
+#contact-section td {
+  background-color: #181818;
+}
+
+#contact-section input[type="text"],
+#contact-section input[type="email"],
+#contact-section input[type="tel"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #00AAFF;
+  border-radius: 5px;
+  background-color: #181818;
+  color: white;
+}
+
+#contact-section button {
+  padding: 8px 16px;
+  background-color: #00AAFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#contact-section button:hover {
+  background-color: #0088cc;
+}
+
+#back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000; /* Ensure it is on top of other elements */
+  transition: background-color 0.3s;
+}
+
+#back-btn:hover {
+  background-color: #0056b3;
+}

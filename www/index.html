@@ -27,6 +27,7 @@
 <body>
 
     <div class="container">
+        <button id="back-btn" hidden>Back</button>
 
         <section id="Start">
             <div class="row">
@@ -322,7 +323,7 @@
                         <div id="toggle-menu" class="toggle-menu" hidden>
                             <ul>
                                 <li><a href="#"  id="profile-btn">Profile</a></li>
-                                <li><a href="#" >Contacts</a></li>
+                                <li><a href="#" id="contact-btn">Contacts</a></li>
                                 <li><a href="#"  id="logout-btn">Logout</a></li>
                             </ul>
                         </div>
@@ -370,7 +371,11 @@
         <section id="profile" hidden>
             <div class="profile-update-container">
                 <h2>Update Profile</h2>
-                <form id="profile-update-form">
+                <form id="profile-update-form" onsubmit="updateUser(event)">
+                    <div class="form-group">
+                        <label for="uid">UserId</label>
+                        <label type="text" id="uid" name="uid"></label>
+                    </div>
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" required>
@@ -392,6 +397,12 @@
             </div>
         </section>
     </div>
+    <section id="contact-section" hidden>
+        <h1>Contact Management</h1>
+        <h2>Contact List</h2>
+        <div id="contact-list"></div>
+        <button id="update-all-contacts-btn">Update</button>
+    </section>
 
     <div class="offcanvas offcanvas-start chat-canvas" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
         id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
