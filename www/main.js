@@ -116,6 +116,8 @@ $(document).ready(function () {
         }
     });
 
+    let previousScreen = null;
+
     async function login(event) {
         event.preventDefault();
         const username = document.getElementById('login-username').value;
@@ -127,6 +129,8 @@ $(document).ready(function () {
             $("#login-form").attr("hidden",true);
             $("#Loader").attr("hidden",false);
             await eel.init();
+            previousScreen = '#login-form'; // Set the previous screen
+            $('#back-btn').attr("hidden", false); // Show the back button
         } else {
             alert('Login failed');
         }
@@ -191,23 +195,27 @@ $(document).ready(function () {
         event.preventDefault();
         $('#Oval').attr("hidden",true);
         $('#profile').attr("hidden",false);
-     })
-
+        previousScreen = '#Oval'; // Set the previous screen
+        $('#back-btn').attr("hidden", false); // Show the back button
+     });
+     
+     let initialUserDetails = {};
      function setUserDetails(userDetails) {
+        initialUserDetails = userDetails;
         document.getElementById('username').value = userDetails.username;
         document.getElementById('email').value = userDetails.email;
         document.getElementById('phone').value = userDetails.phone;
         document.getElementById('password').value = userDetails.password;
-        document.getElementById('confirm-password').value = userDetails.password; // Assuming confirm password is same as password initially
     }
 
     // Fetch user details from eel and set them into the form
     eel.getUserDetails()(function(userDetails) {
         setUserDetails(userDetails);
     });
-	document.getElementById('profile-update-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
 
+    async function updateUser(event) {
+        event.preventDefault(); // Prevent the default form submission
+    
         // Get current form values
         const updatedUserDetails = {
             username: document.getElementById('username').value,
@@ -215,29 +223,131 @@ $(document).ready(function () {
             phone: document.getElementById('phone').value,
             password: document.getElementById('password').value,
         };
-
+    
         // Check if there are any changes
         const hasChanges = Object.keys(updatedUserDetails).some(key => updatedUserDetails[key] !== initialUserDetails[key]);
-
         if (hasChanges) {
             // Update user details through eel
-            eel.updateUser(updatedUserDetails)(function(response) {
-                if (response.success) {
-                    alert('Profile updated successfully!');
-					$('#profile').attr("hidden",true);
-					$('#Oval').attr("hidden",false);
-                } else {
-                    alert('Failed to update profile. Please try again.');
-                }
-            });
+            const response = await eel.updateUser(updatedUserDetails)();
+            if (response.success) {
+                alert('User details updated successfully!');
+            } else {
+                alert('Failed to update user details: ' + response.error);
+            }
         } else {
             alert('No changes detected.');
-			$('#profile').attr("hidden",true);
-			$('#Oval').attr("hidden",false);
+
         }
+        $('#Oval').attr("hidden",false);
+        $('#profile').attr("hidden",true);
+    }
+    
+    // Ensure the function is bound to the form submit event
+    document.getElementById('profile-update-form').addEventListener('submit', updateUser);
+
+    async function displayContactDetails() {
+        try {
+            const contacts = await eel.fetch_contact_details()();
+            let contactSection = $('#contact-section');
+            contactSection.empty(); // Clear any existing content
+
+            if (Object.keys(contacts).length > 0) {
+                let table = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                Object.entries(contacts).forEach(([id, details], index) => {
+                    const rowId = index + 1;
+                    table += `
+                        <tr>
+                            <td><input type="text" value="${details.name}" id="name-${rowId}" data-original="${details.name}"></td>
+                            <td><input type="email" value="${details.email}" id="email-${rowId}" data-original="${details.email}"></td>
+                            <td><input type="tel" value="${details.phone}" id="phone-${rowId}" data-original="${details.phone}"></td>
+                        </tr>
+                    `;
+                });
+
+                table += `
+                        </tbody>
+                    </table>
+                `;
+
+                contactSection.append(table);
+                contactSection.append('<button id="update-all-contacts-btn">Update All Contacts</button>');
+
+                // Bind the updateAllContacts function to the update button
+                $('#update-all-contacts-btn').click(updateAllContacts);
+            } else {
+                contactSection.append('<p>No contacts found.</p>');
+            }
+
+            // Set the previous screen and show the back button
+            previousScreen = '#Oval';
+            $('#back-btn').attr("hidden", false);
+        } catch (error) {
+            console.error('Error fetching contact details:', error);
+        }
+    }
+
+    // Function to update all contact details
+    async function updateAllContacts() {
+        const updatedContacts = [];
+        $('#contact-section table tbody tr').each(function (index) {
+            const rowId = index + 1;
+            const name = $(this).find(`input[id="name-${rowId}"]`).val();
+            const email = $(this).find(`input[id="email-${rowId}"]`).val();
+            const phone = $(this).find(`input[id="phone-${rowId}"]`).val();
+
+            const originalName = $(this).find(`input[id="name-${rowId}"]`).data('original');
+            const originalEmail = $(this).find(`input[id="email-${rowId}"]`).data('original');
+            const originalPhone = $(this).find(`input[id="phone-${rowId}"]`).data('original');
+
+            if (name !== originalName || email !== originalEmail || phone !== originalPhone) {
+                updatedContacts.push({ id: rowId, name, email, phone });
+            }
+        });
+
+        if (updatedContacts.length > 0) {
+            const result = await eel.updateContacts(updatedContacts)();
+            if (result.success) {
+                alert('Contacts updated successfully!');
+            } else {
+                alert('Failed to update contacts. Please try again.');
+            }
+        } else {
+            alert('No changes detected.');
+        }
+    }
+
+    // Function to navigate back to the previous screen
+    function navigateBack() {
+        if (previousScreen) {
+            $(previousScreen).attr("hidden", false);
+            $('#contact-section').attr("hidden", true);
+            $('#profile').attr("hidden", true);
+            $('#SiriWave').attr("hidden", true);
+            $('#back-btn').attr("hidden", true);
+        }
+    }
+
+    // Bind the navigateBack function to the back button
+    $('#back-btn').click(navigateBack);
+
+    const contact = document.getElementById("contact-btn");
+    contact.addEventListener('click', (event) => {
+        event.preventDefault();
+        displayContactDetails();
+        $('#Oval').attr("hidden", true);
+        $('#contact-section').attr("hidden", false);
+        previousScreen = '#Oval'; // Set the previous screen
+        $('#back-btn').attr("hidden", false); // Show the back button
     });
-    //  const contact = document.getElementById("contact-btn");
-    //  contact.addEventListener('click',(event)=>{
-    //     event.preventDefault();
-    //  })
 });

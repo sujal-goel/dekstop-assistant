@@ -113,12 +113,12 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS contacts (id integer primary key, n
 #         cursor.execute(''' INSERT INTO contacts (id, 'name', 'mobile_no') VALUES (null, ?, ?);''', tuple(selected_data))
 
 # # Commit changes and close connection
-# con.commit()
-con.close()
 
-# query = "INSERT INTO contacts VALUES (null,'abhinav', '9810422278', 'null')"
-# cursor.execute(query)
+query = "INSERT INTO contacts VALUES (null,'abhinav', '9810422278', 'null')"
+cursor.execute(query)
 # con.commit()
+con.commit()
+con.close()
 
 # query = 'kunal'
 # query = query.strip().lower()

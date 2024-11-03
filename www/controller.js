@@ -10,7 +10,6 @@ $(document).ready(function () {
         $('.siri-message').textillate('start');
 
     }
-
     // Display hood
     eel.expose(ShowHood)
     function ShowHood() {
@@ -65,6 +64,7 @@ $(document).ready(function () {
     }
     const registertologin = document.getElementById("registertologin")
     registertologin.addEventListener("click",showLogin,false)
+    
     // Hide Loader and display Face Auth animation
     eel.expose(hideLoader)
     function hideLoader(destination) {

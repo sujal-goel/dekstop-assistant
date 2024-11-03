@@ -5,6 +5,7 @@ import os
 import uuid
 import shutil # to delete complete dir
 from engine.auth.trainer import *
+# from auth.trainer import *
 import eel
 
 @eel.expose
@@ -100,16 +101,16 @@ def getUserDetails():
    try: 
     data = getLogin()
     conn,cursor = createConnection()
-    cursor.execute("SELECT name, email, phone, password FROM user WHERE userid = ?",(data["id"],))  # Assuming user ID is 1
+    cursor.execute("SELECT * FROM user WHERE userid = ?",(data["userid"],))  # Assuming user ID is 1
     user_details = cursor.fetchone()
     conn.close()
-    print(user_details)
     if user_details:
         return {
-            "username": user_details["name"],
-            "email": user_details["email"],
-            "phone": user_details["phone"],
-            "password": user_details["password"]
+            "userid": user_details[0],
+            "username": user_details[1],
+            "email": user_details[2],
+            "phone": user_details[3],
+            "password": user_details[4]
         }
     else:
         return {}
@@ -126,11 +127,11 @@ def updateUser(updated_details):
             UPDATE user
             SET name = ?, email = ?, phone = ?, password = ?
             WHERE userid = ?
-        """, (updated_details["username"], updated_details["email"], updated_details["phone"], updated_details["password"],data["id"]))
+        """, (updated_details["username"], updated_details["email"], updated_details["phone"], updated_details["password"],data["userid"]))
         
         conn.commit()
         conn.close()
-        
+
         return {"success": True}
     except Exception as e:
         return {"success": False, "error": str(e)}
